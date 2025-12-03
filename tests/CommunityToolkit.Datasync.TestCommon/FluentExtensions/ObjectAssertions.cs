@@ -4,9 +4,9 @@
 
 using CommunityToolkit.Datasync.Server;
 using CommunityToolkit.Datasync.TestCommon.Models;
-using FluentAssertions;
-using FluentAssertions.Execution;
-using FluentAssertions.Primitives;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
+using AwesomeAssertions.Primitives;
 using Microsoft.AspNetCore.Mvc.Filters;
 using System.Net.Http.Headers;
 using System.Text.Json;

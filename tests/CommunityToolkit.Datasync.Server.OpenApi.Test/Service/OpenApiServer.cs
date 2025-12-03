@@ -9,6 +9,7 @@ using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace CommunityToolkit.Datasync.Server.OpenApi.Test.Service;
 
@@ -17,13 +18,19 @@ internal static class OpenApiServer
 {
     internal static TestServer CreateTestServer()
     {
-        IWebHostBuilder builder = new WebHostBuilder()
-            .UseEnvironment("Test")
-            .UseContentRoot(AppContext.BaseDirectory)
-            .UseStartup<ServiceStartup>();
-        TestServer server = new(builder);
+        IHostBuilder builder = Host.CreateDefaultBuilder()
+            .ConfigureWebHostDefaults(whb => whb
+                .UseEnvironment("Test")
+                .UseContentRoot(AppContext.BaseDirectory)
+                .UseStartup<ServiceStartup>()
+                .UseTestServer()
+                );
 
-        using IServiceScope scope = server.Services.CreateScope();
+        IHost host = builder.Start();
+
+        TestServer server = host.GetTestServer();
+
+        using IServiceScope scope = host.Services.CreateScope();
         ServiceDbContext context = scope.ServiceProvider.GetRequiredService<ServiceDbContext>();
         context.InitializeDatabase();
 
